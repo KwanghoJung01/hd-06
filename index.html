@@ -1,1169 +1,1328 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- =========================================================
-       HD PROJECT DASHBOARD
-       - 단일 HTML 파일: HTML + CSS + JavaScript 포함
-       - GitHub Pages에 그대로 업로드하여 사용할 수 있습니다.
-       - 향후 실제 프로젝트 데이터/Google 문서/API 연동을 고려해
-         각 영역에 주석을 충분히 넣어두었습니다.
-       ========================================================= -->
-
-  <title>HD Project Dashboard</title>
-
-  <!-- 나눔고딕: 인터넷 연결 시 Google Fonts에서 불러옵니다.
-       오프라인에서도 fallback으로 고딕 계열 폰트를 사용합니다. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    /* =========================================================
-       1. DESIGN SYSTEM
-       메인 컬러는 Dark Green + Ivory + Mint Green 3색으로 구성
-       ========================================================= */
-    :root {
-      --dark-green: #123C32;
-      --deep-green: #0B2B24;
-      --mint: #72B6A3;
-      --mint-light: #DDEFE9;
-      --ivory: #F7F5EE;
-      --white: #FFFFFF;
-      --text: #20302B;
-      --muted: #70807A;
-      --line: #DDE4E0;
-      --success: #3C8B70;
-      --warning: #D29B45;
-      --danger: #B95E5E;
-      --shadow: 0 10px 30px rgba(18, 60, 50, 0.08);
-      --radius: 18px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: var(--ivory);
-      color: var(--text);
-      font-family: "Nanum Gothic", "Malgun Gothic", Arial, sans-serif;
-      line-height: 1.6;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-    /* =========================================================
-       2. HEADER
-       ========================================================= */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: 70px;
-      background: rgba(11, 43, 36, 0.96);
-      backdrop-filter: blur(12px);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 34px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      background: var(--mint);
-      color: var(--deep-green);
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-    }
-
-    .brand small {
-      display: block;
-      font-size: 10px;
-      font-weight: 400;
-      opacity: .65;
-      margin-top: -2px;
-    }
-
-    .nav {
-      display: flex;
-      gap: 6px;
-    }
-
-    .nav a {
-      padding: 9px 13px;
-      border-radius: 9px;
-      color: rgba(255,255,255,.75);
-      font-size: 13px;
-      transition: .2s ease;
-    }
-
-    .nav a:hover {
-      background: rgba(255,255,255,.10);
-      color: white;
-    }
-
-    /* =========================================================
-       3. LAYOUT
-       ========================================================= */
-    .container {
-      width: min(1440px, calc(100% - 48px));
-      margin: 0 auto;
-    }
-
-    .hero {
-      padding: 52px 0 30px;
-      display: grid;
-      grid-template-columns: 1.6fr .8fr;
-      gap: 24px;
-      align-items: stretch;
-    }
-
-    .hero-main {
-      background: linear-gradient(135deg, var(--dark-green), #1B5A4A);
-      color: white;
-      border-radius: 24px;
-      padding: 38px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .hero-main::after {
-      content: "";
-      position: absolute;
-      width: 280px;
-      height: 280px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 50%;
-      right: -80px;
-      top: -100px;
-    }
-
-    .eyebrow {
-      color: var(--mint-light);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 44px);
-      letter-spacing: -2px;
-      line-height: 1.2;
-    }
-
-    .hero-main p {
-      margin: 16px 0 0;
-      max-width: 720px;
-      color: rgba(255,255,255,.76);
-      font-size: 14px;
-    }
-
-    .hero-side {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .team-count {
-      font-size: 42px;
-      font-weight: 800;
-      color: var(--dark-green);
-      line-height: 1;
-    }
-
-    .team-label {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .section {
-      margin: 26px 0;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      margin-bottom: 14px;
-    }
-
-    .section-title h2 {
-      margin: 0;
-      font-size: 21px;
-      letter-spacing: -0.8px;
-    }
-
-    .section-title span {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    /* =========================================================
-       4. KPI CARDS
-       ========================================================= */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-
-    .card {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .kpi {
-      padding: 22px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .kpi::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: var(--mint);
-    }
-
-    .kpi-label {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .kpi-value {
-      margin-top: 7px;
-      font-size: 30px;
-      font-weight: 800;
-      color: var(--dark-green);
-    }
-
-    .kpi-sub {
-      margin-top: 3px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* =========================================================
-       5. DOCUMENT / DRIVE ACTION CARDS
-       ========================================================= */
-    .resource-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-
-    .resource {
-      padding: 24px;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      align-items: center;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .resource:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 34px rgba(18,60,50,.12);
-    }
-
-    .resource-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 13px;
-      display: grid;
-      place-items: center;
-      background: var(--mint-light);
-      color: var(--dark-green);
-      font-weight: 800;
-      flex: 0 0 auto;
-    }
-
-    .resource-left {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .resource h3 {
-      margin: 0 0 5px;
-      font-size: 15px;
-    }
-
-    .resource p {
-      margin: 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 10px;
-      padding: 10px 15px;
-      background: var(--dark-green);
-      color: white;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 12px;
-      white-space: nowrap;
-      transition: .2s ease;
-    }
-
-    .btn:hover {
-      background: var(--deep-green);
-      transform: translateY(-1px);
-    }
-
-    .btn.secondary {
-      background: var(--mint-light);
-      color: var(--dark-green);
-    }
-
-    /* =========================================================
-       6. DASHBOARD GRID
-       ========================================================= */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 16px;
-    }
-
-    .panel {
-      padding: 24px;
-    }
-
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
-    .panel-head h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .panel-head span {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* =========================================================
-       7. PROGRESS CHART
-       순수 JS + CSS로 작성하여 외부 차트 라이브러리 불필요
-       ========================================================= */
-    .progress-wrap {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 30px;
-      align-items: center;
-    }
-
-    .donut {
-      width: 170px;
-      height: 170px;
-      border-radius: 50%;
-      background: conic-gradient(var(--mint) var(--progress), var(--mint-light) 0);
-      display: grid;
-      place-items: center;
-      position: relative;
-    }
-
-    .donut::after {
-      content: "";
-      position: absolute;
-      inset: 18px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    .donut-value {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
-
-    .donut-value strong {
-      display: block;
-      font-size: 31px;
-      color: var(--dark-green);
-    }
-
-    .donut-value span {
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .progress-list {
-      display: grid;
-      gap: 16px;
-    }
-
-    .progress-item {
-      display: grid;
-      gap: 7px;
-    }
-
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .bar {
-      height: 9px;
-      border-radius: 99px;
-      background: var(--mint-light);
-      overflow: hidden;
-    }
-
-    .bar > div {
-      height: 100%;
-      width: 0;
-      background: var(--mint);
-      border-radius: inherit;
-      transition: width 1s cubic-bezier(.2,.8,.2,1);
-    }
-
-    /* =========================================================
-       8. GANTT CHART
-       ========================================================= */
-    .gantt {
-      overflow-x: auto;
-    }
-
-    .gantt-grid {
-      min-width: 900px;
-      display: grid;
-      grid-template-columns: 230px repeat(12, 1fr);
-      border-top: 1px solid var(--line);
-      border-left: 1px solid var(--line);
-    }
-
-    .gantt-cell {
-      min-height: 48px;
-      padding: 10px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      background: white;
-      font-size: 11px;
-    }
-
-    .gantt-header {
-      background: var(--mint-light);
-      color: var(--dark-green);
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .task-name {
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-    }
-
-    .task-row {
-      position: relative;
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 230px repeat(12, 1fr);
-      min-height: 48px;
-    }
-
-    .task-bar {
-      align-self: center;
-      height: 22px;
-      border-radius: 8px;
-      background: var(--dark-green);
-      color: white;
-      font-size: 9px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      padding: 0 8px;
-      overflow: hidden;
-      white-space: nowrap;
-      box-shadow: 0 3px 7px rgba(18,60,50,.15);
-    }
-
-    .task-bar.done {
-      background: var(--mint);
-      color: var(--deep-green);
-    }
-
-    /* =========================================================
-       9. MEETING / ACTIVITY LIST
-       ========================================================= */
-    .activity-list {
-      display: grid;
-      gap: 0;
-    }
-
-    .activity {
-      display: grid;
-      grid-template-columns: 90px 1fr 70px;
-      gap: 15px;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--line);
-      font-size: 12px;
-    }
-
-    .activity:last-child {
-      border-bottom: 0;
-    }
-
-    .date {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .status {
-      justify-self: end;
-      border-radius: 99px;
-      padding: 4px 9px;
-      background: var(--mint-light);
-      color: var(--dark-green);
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    /* =========================================================
-       10. DRIVE 안내
-       ========================================================= */
-    .notice {
-      background: var(--dark-green);
-      color: white;
-      border-radius: var(--radius);
-      padding: 22px 24px;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      align-items: center;
-    }
-
-    .notice strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .notice p {
-      margin: 0;
-      color: rgba(255,255,255,.72);
-      font-size: 11px;
-    }
-
-    .notice .btn {
-      background: var(--mint);
-      color: var(--deep-green);
-    }
-
-    /* =========================================================
-       11. FOOTER
-       ========================================================= */
-    footer {
-      margin-top: 50px;
-      padding: 28px 0 45px;
-      color: var(--muted);
-      font-size: 11px;
-      text-align: center;
-    }
-
-    /* =========================================================
-       12. RESPONSIVE
-       ========================================================= */
-    @media (max-width: 1000px) {
-      .hero,
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 700px) {
-      .topbar {
-        padding: 0 16px;
-      }
-
-      .nav {
-        display: none;
-      }
-
-      .container {
-        width: min(100% - 28px, 1440px);
-      }
-
-      .hero-main {
-        padding: 28px;
-      }
-
-      .resource-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .progress-wrap {
-        grid-template-columns: 1fr;
-        justify-items: center;
-      }
-
-      .progress-list {
-        width: 100%;
-      }
-
-      .kpi-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HD 프로젝트 협업 대시보드</title>
+<meta name="description" content="HD 프로젝트 팀 공유용 대시보드 - 회의록, 공유폴더, 간트차트, 진행률 관리" />
+
+<!--
+  ============================================================================
+  HD 프로젝트 협업 대시보드 (single-file)
+  ----------------------------------------------------------------------------
+  · 이 파일 하나(index.html)만 GitHub 저장소 루트에 올리면 GitHub Pages로 바로 배포됩니다.
+    (저장소 → Settings → Pages → Source: Deploy from a branch → main / (root))
+  · 수정이 필요한 값은 모두 <script> 하단의 "① 설정 영역(CONFIG/TASKS/...)"에 모여 있습니다.
+    HTML 구조를 건드리지 않고 데이터만 바꿔도 화면 전체가 갱신됩니다.
+  · 색상/폰트 등 디자인 값은 :root 의 CSS 변수에서 한 번에 변경할 수 있습니다.
+  ============================================================================
+-->
+
+<!-- 폰트: 나눔고딕(고딕체) - Google Fonts CDN -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
+
+<style>
+/* ==========================================================================
+   1. 디자인 토큰 (색상 · 타이포 · 간격)
+   - 메인: 다크그린 계열
+   - 포인트 컬러 2종: ① 브라스 골드(#D6A24A)  ② 민트(#4FD1A1)
+   ========================================================================== */
+:root{
+  /* --- 다크그린 (메인) --- */
+  --green-900:#05231A;   /* 헤더/푸터 배경 */
+  --green-800:#0B3A2C;   /* 기본 다크그린 */
+  --green-700:#12513E;   /* 카드 강조 */
+  --green-600:#1B6B52;   /* 라인/보조 */
+  --green-050:#E8F1EC;   /* 아주 옅은 그린 배경 */
+
+  /* --- 포인트 컬러 ① 브라스 골드 : 마일스톤 · 경고 · 강조 --- */
+  --gold:#D6A24A;
+  --gold-soft:#F6EBD6;
+
+  /* --- 포인트 컬러 ② 민트 : 진행/완료 · 데이터 시각화 --- */
+  --mint:#4FD1A1;
+  --mint-soft:#DFF6EC;
+
+  /* --- 중립색 --- */
+  --bg:#F4F7F4;
+  --card:#FFFFFF;
+  --line:#DFE6E1;
+  --text:#12241D;
+  --text-mid:#4E6259;
+  --text-weak:#84968C;
+
+  /* --- 형태 --- */
+  --r-lg:18px;
+  --r-md:12px;
+  --r-sm:8px;
+  --shadow:0 1px 2px rgba(6,35,26,.05), 0 8px 24px rgba(6,35,26,.06);
+  --shadow-hi:0 4px 10px rgba(6,35,26,.08), 0 18px 40px rgba(6,35,26,.12);
+
+  /* --- 레이아웃 --- */
+  --maxw:1280px;
+  --gantt-label:220px;  /* 간트차트 좌측 작업명 컬럼 너비 */
+}
+
+/* ==========================================================================
+   2. 기본 리셋 & 타이포그래피
+   ========================================================================== */
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Nanum Gothic','맑은 고딕','Malgun Gothic',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums; /* 숫자 자리폭 고정 → 표/차트 정렬 안정 */
+}
+h1,h2,h3,h4,p,ul,ol{margin:0;}
+ul,ol{padding:0;list-style:none;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+/* 섹션 공통 */
+.section{padding:44px 0 0;}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
+.eyebrow{
+  font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--green-600);
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;
+}
+.eyebrow::before{content:'';width:18px;height:2px;background:var(--gold);display:inline-block;}
+.section-title{font-size:21px;font-weight:800;letter-spacing:-.02em;}
+.section-desc{font-size:13px;color:var(--text-mid);margin-top:4px;}
+
+/* ==========================================================================
+   3. 헤더 (다크그린 배경 + 프로젝트 요약)
+   ========================================================================== */
+.hero{
+  background:
+    radial-gradient(900px 380px at 88% -10%, rgba(79,209,161,.20), transparent 60%),
+    radial-gradient(600px 320px at 8% 110%, rgba(214,162,74,.16), transparent 60%),
+    linear-gradient(160deg,var(--green-900) 0%, var(--green-800) 60%, var(--green-700) 100%);
+  color:#EAF3EE;
+  padding:26px 0 34px;
+  position:relative;
+  overflow:hidden;
+}
+/* 헤더 하단 얇은 골드 라인 */
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--mint),var(--gold));opacity:.85;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:42px;height:42px;border-radius:12px;flex:none;
+  background:linear-gradient(140deg,var(--mint),var(--green-600));
+  display:grid;place-items:center;font-weight:800;font-size:15px;color:var(--green-900);
+  box-shadow:0 6px 18px rgba(79,209,161,.28);
+}
+.brand-txt strong{display:block;font-size:16px;font-weight:800;letter-spacing:-.01em;}
+.brand-txt span{display:block;font-size:11.5px;color:rgba(234,243,238,.62);letter-spacing:.06em;}
+
+.nav{display:flex;gap:4px;flex-wrap:wrap;}
+.nav a{
+  font-size:13px;padding:8px 13px;border-radius:999px;color:rgba(234,243,238,.78);
+  transition:background .2s ease,color .2s ease;
+}
+.nav a:hover{background:rgba(255,255,255,.10);color:#fff;}
+
+.hero-main{margin-top:30px;display:grid;grid-template-columns:1.35fr 1fr;gap:28px;align-items:end;}
+.hero h1{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.22;}
+.hero h1 em{font-style:normal;color:var(--mint);}
+.hero-sub{margin-top:10px;font-size:14px;color:rgba(234,243,238,.72);max-width:52ch;}
+
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.chip{
+  font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
+  display:inline-flex;align-items:center;gap:7px;
+}
+.chip b{color:var(--gold);}
+.chip.mint b{color:var(--mint);}
+
+/* 헤더 우측: 전체 진행률 도넛 */
+.hero-gauge{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r-lg);
+  padding:18px 20px;
+  display:flex;align-items:center;gap:18px;
+  backdrop-filter:blur(6px);
+}
+.gauge-txt h4{font-size:12px;font-weight:700;color:rgba(234,243,238,.66);letter-spacing:.06em;}
+.gauge-txt .big{font-size:30px;font-weight:800;letter-spacing:-.03em;color:#fff;line-height:1.2;}
+.gauge-txt .note{font-size:11.5px;color:rgba(234,243,238,.58);}
+
+/* 링크 버튼 */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;padding:10px 16px;border-radius:10px;
+  transition:transform .16s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+  border:1px solid transparent;white-space:nowrap;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+.btn-gold{background:var(--gold);color:#2B1C00;box-shadow:0 6px 16px rgba(214,162,74,.30);}
+.btn-mint{background:var(--mint);color:#04291D;box-shadow:0 6px 16px rgba(79,209,161,.28);}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--text-mid);}
+.btn-ghost:hover{border-color:var(--green-600);color:var(--green-700);background:var(--green-050);}
+.btn-dark{background:var(--green-800);color:#fff;}
+.btn-dark:hover{background:var(--green-700);}
+.btn-sm{padding:7px 12px;font-size:12px;}
+
+/* ==========================================================================
+   4. KPI 카드
+   ========================================================================== */
+.kpi-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:14px;
+  margin-top:-26px;position:relative;z-index:2;
+}
+.kpi{
+  background:var(--card);border-radius:var(--r-md);padding:16px 18px;
+  box-shadow:var(--shadow);border-top:3px solid var(--green-700);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-hi);}
+.kpi.is-gold{border-top-color:var(--gold);}
+.kpi.is-mint{border-top-color:var(--mint);}
+.kpi .lab{font-size:11.5px;font-weight:700;color:var(--text-mid);letter-spacing:.04em;}
+.kpi .val{font-size:27px;font-weight:800;letter-spacing:-.03em;line-height:1.25;margin-top:2px;}
+.kpi .val small{font-size:14px;font-weight:700;color:var(--text-mid);margin-left:2px;}
+.kpi .sub{font-size:11.5px;color:var(--text-weak);}
+
+/* ==========================================================================
+   5. 카드 · 그리드 공통
+   ========================================================================== */
+.card{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:22px;}
+.card-title{font-size:15px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'';width:8px;height:8px;border-radius:3px;background:var(--mint);display:inline-block;}
+.card-title.gold::before{background:var(--gold);}
+.card-sub{font-size:12px;color:var(--text-weak);margin-top:3px;}
+
+.grid-3{display:grid;grid-template-columns:0.9fr 1.1fr 1.2fr;gap:16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* --- 도넛 차트 --- */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-top:8px;}
+.donut{position:relative;width:180px;height:180px;}
+.donut svg{transform:rotate(-90deg);} /* 12시 방향에서 시작 */
+.donut .ring-bg{stroke:var(--green-050);}
+.donut .ring-fg{stroke:url(#donutGrad);stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1);}
+.donut-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center;}
+.donut-center .n{font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.donut-center .n span{font-size:16px;}
+.donut-center .t{font-size:11.5px;color:var(--text-weak);margin-top:4px;}
+.donut-legend{display:flex;gap:14px;font-size:11.5px;color:var(--text-mid);margin-top:4px;}
+.donut-legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px;}
+
+/* --- 단계별 진행률 바 --- */
+.bar-row{margin-top:14px;}
+.bar-row:first-of-type{margin-top:10px;}
+.bar-head{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;}
+.bar-head b{font-weight:700;}
+.bar-head span{color:var(--text-mid);font-weight:700;}
+.bar-track{height:9px;border-radius:99px;background:var(--green-050);overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+
+/* --- 추이(라인) 차트 --- */
+.trend{width:100%;height:210px;display:block;}
+.trend .grid-line{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4;}
+.trend .axis-txt{font-size:10px;fill:var(--text-weak);}
+.trend .area{fill:url(#areaGrad);}
+.trend .line-actual{fill:none;stroke:var(--green-700);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.trend .line-plan{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:5 5;}
+.trend .dot{fill:#fff;stroke:var(--green-700);stroke-width:2.5;}
+.legend{display:flex;gap:16px;font-size:11.5px;color:var(--text-mid);margin-top:6px;}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:middle;}
+
+/* ==========================================================================
+   6. 간트차트
+   ========================================================================== */
+.gantt-card{margin-top:16px;padding:22px 0 8px;}
+.gantt-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:0 22px;}
+.tab{
+  font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:999px;
+  color:var(--text-mid);background:var(--bg);border:1px solid var(--line);
+  transition:all .18s ease;
+}
+.tab:hover{border-color:var(--green-600);color:var(--green-700);}
+.tab.active{background:var(--green-800);color:#fff;border-color:var(--green-800);}
+
+.gantt-scroll{overflow-x:auto;margin-top:16px;padding-bottom:8px;}
+.gantt{min-width:900px;position:relative;}
+
+/* 상단 월/주 헤더 */
+.gantt-head{display:flex;position:sticky;top:0;z-index:5;background:var(--card);}
+.gantt-head .lab-col{
+  width:var(--gantt-label);flex:none;padding:0 12px 8px 22px;
+  font-size:11px;font-weight:800;color:var(--text-weak);letter-spacing:.1em;
+  display:flex;align-items:flex-end;
+}
+.gantt-head .months{flex:1;display:flex;border-bottom:1px solid var(--line);padding-right:22px;}
+.month{
+  font-size:11.5px;font-weight:700;color:var(--text-mid);text-align:center;
+  padding:2px 0 7px;border-left:1px solid var(--line);
+}
+.month:first-child{border-left:0;}
+
+/* 본문 행 */
+.gantt-body{position:relative;}
+.g-phase{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 22px 6px;font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--green-700);
+}
+.g-phase .dot{width:7px;height:7px;border-radius:2px;}
+.g-phase .cnt{font-weight:700;color:var(--text-weak);letter-spacing:0;}
+
+.g-row{display:flex;align-items:center;min-height:38px;transition:background .16s ease;}
+.g-row:hover{background:var(--green-050);}
+.g-row .lab{
+  width:var(--gantt-label);flex:none;padding:0 12px 0 22px;
+  font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.g-row .lab .owner{font-size:10.5px;color:var(--text-weak);margin-left:6px;}
+.g-track{flex:1;position:relative;height:38px;margin-right:22px;}
+
+/* 막대: 바깥=계획기간, 안쪽 채움=실제 진행률 */
+.g-bar{
+  position:absolute;top:9px;height:20px;border-radius:7px;
+  background:var(--green-050);border:1px solid rgba(27,107,82,.22);
+  overflow:hidden;cursor:pointer;
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .7s cubic-bezier(.22,1,.36,1), box-shadow .18s ease;
+}
+.g-bar:hover{box-shadow:0 4px 14px rgba(6,35,26,.18);}
+.g-bar.show{transform:scaleX(1);}
+.g-bar .fill{
+  position:absolute;left:0;top:0;bottom:0;width:0;border-radius:6px;
+  background:linear-gradient(90deg,var(--green-700),var(--green-600));
+  transition:width 1s cubic-bezier(.22,1,.36,1) .25s;
+}
+.g-bar.done .fill{background:linear-gradient(90deg,var(--green-600),var(--mint));}
+.g-bar.late{border-color:rgba(214,162,74,.55);}
+.g-bar.late .fill{background:linear-gradient(90deg,#B4802B,var(--gold));}
+.g-bar .pct{
+  position:absolute;right:7px;top:50%;transform:translateY(-50%);
+  font-size:10.5px;font-weight:800;color:var(--green-800);mix-blend-mode:normal;
+}
+
+/* 마일스톤 마커(◆) */
+.g-ms{position:absolute;top:11px;width:16px;height:16px;margin-left:-8px;
+  background:var(--gold);transform:rotate(45deg) scale(0);border-radius:3px;
+  box-shadow:0 3px 8px rgba(214,162,74,.5);transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+.g-ms.show{transform:rotate(45deg) scale(1);}
+
+/* 오늘 기준선 */
+.today-line{
+  position:absolute;top:0;bottom:0;width:2px;background:var(--gold);z-index:3;pointer-events:none;
+  opacity:.75;
+}
+.today-line::before{
+  content:'오늘';position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  background:var(--gold);color:#2B1C00;font-size:10px;font-weight:800;
+  padding:1px 7px;border-radius:99px;white-space:nowrap;
+}
+
+/* 툴팁 */
+.tip{
+  position:fixed;z-index:99;pointer-events:none;opacity:0;transform:translateY(4px);
+  background:var(--green-900);color:#EAF3EE;font-size:12px;line-height:1.55;
+  padding:9px 12px;border-radius:10px;box-shadow:var(--shadow-hi);max-width:260px;
+  transition:opacity .15s ease,transform .15s ease;
+}
+.tip.on{opacity:1;transform:translateY(0);}
+.tip b{color:var(--mint);}
+
+/* ==========================================================================
+   7. 구글 문서 · 공유 폴더 섹션
+   ========================================================================== */
+.link-card{
+  background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:24px;border-left:4px solid var(--green-700);
+  display:flex;flex-direction:column;gap:14px;
+}
+.link-card.folder{border-left-color:var(--gold);}
+.lc-top{display:flex;align-items:flex-start;gap:14px;}
+.lc-ico{
+  width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;
+  background:var(--green-050);color:var(--green-700);
+}
+.link-card.folder .lc-ico{background:var(--gold-soft);color:#9A6C15;}
+.lc-top h3{font-size:16px;font-weight:800;letter-spacing:-.01em;}
+.lc-top p{font-size:12.5px;color:var(--text-mid);margin-top:3px;}
+
+/* 경로(브레드크럼) 표시 */
+.path{
+  background:var(--green-900);color:#CFE7DA;border-radius:10px;padding:11px 13px;
+  font-size:12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;word-break:break-all;
+}
+.path .seg{color:#EAF3EE;font-weight:700;}
+.path .sep{color:var(--mint);}
+.path .leaf{color:var(--gold);font-weight:800;}
+
+/* 폴더 트리 */
+.tree{margin-top:2px;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.tree li{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:12.5px;
+  border-top:1px solid var(--line);transition:background .16s ease;
+}
+.tree li:first-child{border-top:0;background:var(--green-050);font-weight:800;}
+.tree li:hover{background:var(--bg);}
+.tree .fno{
+  font-size:10.5px;font-weight:800;color:var(--green-700);background:var(--green-050);
+  border-radius:5px;padding:2px 6px;flex:none;
+}
+.tree .fdesc{margin-left:auto;color:var(--text-weak);font-size:11.5px;}
+
+/* 안내 문구 박스 */
+.guide{background:var(--bg);border-radius:12px;padding:16px 18px;}
+.guide h4{font-size:12.5px;font-weight:800;color:var(--green-800);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.guide h4 .num{
+  width:19px;height:19px;border-radius:6px;background:var(--green-800);color:#fff;
+  font-size:11px;display:grid;place-items:center;flex:none;
+}
+.guide ol li,.guide ul li{
+  font-size:12.5px;color:var(--text-mid);padding-left:15px;position:relative;margin-bottom:5px;line-height:1.6;
+}
+.guide ol li::before{content:'·';position:absolute;left:4px;color:var(--gold);font-weight:800;}
+.guide code{
+  background:var(--green-050);color:var(--green-800);font-size:11.5px;font-weight:700;
+  padding:1px 6px;border-radius:5px;
+}
+.notice{
+  margin-top:12px;background:var(--gold-soft);border-radius:10px;padding:11px 14px;
+  font-size:12px;color:#6B4A08;line-height:1.6;border-left:3px solid var(--gold);
+}
+.lc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;}
+
+/* ==========================================================================
+   8. 마일스톤 · 팀 공유 현황
+   ========================================================================== */
+.ms-list{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.ms{
+  background:var(--card);border-radius:var(--r-md);padding:16px 18px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;
+}
+.ms:hover{transform:translateY(-3px);box-shadow:var(--shadow-hi);}
+.ms::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line);}
+.ms.done::before{background:var(--mint);}
+.ms.next::before{background:var(--gold);}
+.ms .date{font-size:11.5px;font-weight:800;color:var(--green-600);letter-spacing:.04em;}
+.ms .name{font-size:13.5px;font-weight:700;margin-top:3px;}
+.ms .stat{font-size:11.5px;color:var(--text-weak);margin-top:5px;}
+.badge{
+  display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;
+  background:var(--green-050);color:var(--green-700);
+}
+.badge.gold{background:var(--gold-soft);color:#8A6110;}
+.badge.mint{background:var(--mint-soft);color:#0F6A4A;}
+
+/* 팀 공유 현황 */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px;}
+.team-item{
+  background:var(--bg);border-radius:10px;padding:11px 13px;font-size:12.5px;
+  display:flex;align-items:center;gap:10px;border:1px solid transparent;transition:all .18s ease;
+}
+.team-item:hover{background:var(--card);border-color:var(--line);box-shadow:var(--shadow);}
+.avatar{
+  width:28px;height:28px;border-radius:9px;flex:none;display:grid;place-items:center;
+  font-size:11px;font-weight:800;color:#fff;background:var(--green-700);
+}
+.team-item .cnt{margin-left:auto;font-weight:800;color:var(--green-700);}
+.share-bar{display:flex;height:10px;border-radius:99px;overflow:hidden;margin-top:14px;background:var(--green-050);}
+.share-bar div{height:100%;transition:width 1s cubic-bezier(.22,1,.36,1);}
+
+/* ==========================================================================
+   9. 푸터 · 토스트 · 스크롤 애니메이션
+   ========================================================================== */
+footer{background:var(--green-900);color:rgba(234,243,238,.62);margin-top:52px;padding:30px 0;font-size:12.5px;}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;}
+.foot a{color:var(--mint);}
+.foot a:hover{text-decoration:underline;}
+
+.toast{
+  position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);
+  background:var(--green-900);color:#EAF3EE;font-size:13px;font-weight:700;
+  padding:12px 20px;border-radius:12px;box-shadow:var(--shadow-hi);
+  opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.22,1,.36,1);z-index:200;
+  display:flex;align-items:center;gap:9px;
+}
+.toast.on{opacity:1;transform:translate(-50%,0);}
+.toast .ok{color:var(--mint);font-weight:800;}
+
+/* 스크롤 진입 애니메이션 */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1);}
+.reveal.in{opacity:1;transform:none;}
+
+/* ==========================================================================
+   10. 반응형
+   ========================================================================== */
+@media (max-width:1080px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .grid-3{grid-template-columns:1fr;}
+  .hero-main{grid-template-columns:1fr;}
+  .ms-list{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:720px){
+  .wrap{padding:0 16px;}
+  .hero h1{font-size:26px;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .grid-2{grid-template-columns:1fr;}
+  .nav{display:none;}          /* 모바일에서는 상단 메뉴 숨김 */
+  :root{--gantt-label:130px;}
+  .gantt-head .lab-col,.g-row .lab,.g-phase{padding-left:16px;}
+}
+
+/* 접근성: 모션 최소화 설정 존중 */
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important;}
+  html{scroll-behavior:auto;}
+}
+/* 키보드 포커스 표시 */
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px;}
+</style>
 </head>
 
 <body>
 
-  <!-- =========================================================
-       HEADER
-       ========================================================= -->
-  <header class="topbar">
-    <a href="#top" class="brand">
-      <div class="brand-mark">HD</div>
+<!-- ============================ 헤더 ============================ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">HD</div>
+        <div class="brand-txt">
+          <strong id="brandName">HD 프로젝트</strong>
+          <span id="brandSub">TEAM COLLABORATION DASHBOARD</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#progress">진행 현황</a>
+        <a href="#gantt">일정(간트)</a>
+        <a href="#workspace">회의록 · 공유폴더</a>
+        <a href="#milestone">마일스톤</a>
+        <a href="#team">참여 인원</a>
+      </nav>
+    </div>
+
+    <div class="hero-main">
       <div>
-        HD PROJECT
-        <small>PROJECT COLLABORATION DASHBOARD</small>
-      </div>
-    </a>
-
-    <nav class="nav">
-      <a href="#overview">Overview</a>
-      <a href="#documents">Documents</a>
-      <a href="#schedule">Schedule</a>
-      <a href="#progress">Progress</a>
-      <a href="#activities">Activities</a>
-    </nav>
-  </header>
-
-  <main id="top" class="container">
-
-    <!-- =======================================================
-         HERO
-         프로젝트 기본 정보
-         ======================================================= -->
-    <section class="hero" id="overview">
-
-      <div class="hero-main">
-        <div class="eyebrow">HD Project Workspace</div>
-        <h1>프로젝트 통합<br>협업 Dashboard</h1>
-        <p>
-          회의록, 프로젝트 자료, 일정, 진행 현황을 한 곳에서 확인하고
-          약 30명의 프로젝트 구성원이 동일한 기준으로 협업할 수 있도록 만든
-          프로젝트 관리용 웹 대시보드입니다.
-        </p>
-      </div>
-
-      <div class="hero-side">
-        <div class="team-count">30</div>
-        <div class="team-label">프로젝트 공유 대상 인원</div>
-
-        <div style="margin-top:22px; font-size:12px; color:var(--muted);">
-          <strong style="color:var(--dark-green);">Project Status</strong><br>
-          진행 중 · 지속 업데이트
+        <h1>자료를 <em>한 곳에서</em> 주고받고,<br />일정은 <em>한 화면에서</em> 확인합니다.</h1>
+        <p class="hero-sub" id="heroDesc">회의록은 구글 문서에, 산출물은 공유 드라이브에 모읍니다. 이 대시보드에서 링크·경로·업로드 규칙·전체 일정을 함께 봅니다.</p>
+        <div class="hero-meta">
+          <span class="chip">프로젝트 기간 <b id="chipPeriod">-</b></span>
+          <span class="chip mint">공유 인원 <b id="chipMembers">-</b></span>
+          <span class="chip">남은 기간 <b id="chipDday">-</b></span>
+          <span class="chip mint">최종 업데이트 <b id="chipUpdated">-</b></span>
         </div>
       </div>
 
-    </section>
-
-    <!-- =======================================================
-         KPI
-         ※ 실제 프로젝트 수치로 변경할 수 있는 영역
-         ======================================================= -->
-    <section class="section">
-      <div class="kpi-grid">
-
-        <div class="card kpi">
-          <div class="kpi-label">전체 프로젝트 진행률</div>
-          <div class="kpi-value" data-count="68">0%</div>
-          <div class="kpi-sub">전체 Work Package 기준</div>
+      <!-- 헤더 우측 요약 게이지 -->
+      <div class="hero-gauge">
+        <div class="donut" style="width:104px;height:104px;">
+          <svg viewBox="0 0 120 120" width="104" height="104" aria-hidden="true">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.13)" stroke-width="11"></circle>
+            <circle id="heroRing" cx="60" cy="60" r="50" fill="none" stroke="#4FD1A1" stroke-width="11"
+                    stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"
+                    style="transition:stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1);"></circle>
+          </svg>
+          <div class="donut-center">
+            <div class="n" style="color:#fff;font-size:22px;"><span id="heroPct">0</span><span style="font-size:12px;">%</span></div>
+          </div>
         </div>
-
-        <div class="card kpi">
-          <div class="kpi-label">완료 Task</div>
-          <div class="kpi-value" data-count="24">0</div>
-          <div class="kpi-sub">전체 35개 Task 중</div>
+        <div class="gauge-txt">
+          <h4>전체 진행률</h4>
+          <div class="big"><span id="heroDone">0</span> / <span id="heroTotal">0</span></div>
+          <div class="note">완료 과제 수 기준 · 계획 대비 <span id="heroGap">-</span></div>
         </div>
-
-        <div class="card kpi">
-          <div class="kpi-label">이번 주 주요 일정</div>
-          <div class="kpi-value" data-count="5">0</div>
-          <div class="kpi-sub">회의 / 검토 / 개발 일정</div>
-        </div>
-
-        <div class="card kpi">
-          <div class="kpi-label">공유 구성원</div>
-          <div class="kpi-value" data-count="30">0</div>
-          <div class="kpi-sub">프로젝트 참여 인원</div>
-        </div>
-
       </div>
-    </section>
+    </div>
+  </div>
+</header>
 
-    <!-- =======================================================
-         GOOGLE DOCUMENT / DRIVE
-         ======================================================= -->
-    <section class="section" id="documents">
+<!-- ============================ KPI ============================ -->
+<div class="wrap">
+  <div class="kpi-grid" id="kpiGrid"><!-- JS가 렌더링 --></div>
+</div>
 
-      <div class="section-title">
-        <h2>Project Documents</h2>
-        <span>Google Workspace</span>
+<!-- ============================ 진행 현황 ============================ -->
+<section class="section" id="progress">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">PROGRESS</div>
+        <h2 class="section-title">진행 현황</h2>
+        <p class="section-desc">과제 가중치를 반영한 전체 진행률과 단계별 달성도, 주차별 계획 대비 실적입니다.</p>
       </div>
+    </div>
 
-      <div class="resource-grid">
-
-        <div class="card resource">
-          <div class="resource-left">
-            <div class="resource-icon">DOC</div>
-            <div>
-              <h3>프로젝트 회의록</h3>
-              <p>회의 내용 · 결정사항 · Action Item을 이 문서에서 관리합니다.</p>
+    <div class="grid-3">
+      <!-- (1) 전체 진행률 도넛 -->
+      <div class="card reveal">
+        <h3 class="card-title">전체 진행률</h3>
+        <p class="card-sub">가중치 반영 · 실시간 계산</p>
+        <div class="donut-wrap">
+          <div class="donut">
+            <svg viewBox="0 0 120 120" width="180" height="180" role="img" aria-label="전체 진행률 도넛 차트">
+              <defs>
+                <linearGradient id="donutGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#0B3A2C"/>
+                  <stop offset="100%" stop-color="#4FD1A1"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="60" cy="60" r="50" fill="none" stroke-width="13"></circle>
+              <circle id="mainRing" class="ring-fg" cx="60" cy="60" r="50" fill="none" stroke-width="13"
+                      stroke-dasharray="314" stroke-dashoffset="314"></circle>
+            </svg>
+            <div class="donut-center">
+              <div class="n"><span id="mainPct">0</span><span>%</span></div>
+              <div class="t">진행률</div>
             </div>
           </div>
-
-          <!-- Google 문서 직접 열기 -->
-          <a
-            class="btn"
-            href="https://docs.google.com/document/d/1uDpSeNwqRB7TnnmfgK7svmaSavlROvNf8xQ8FeVx14o/edit?usp=sharing"
-            target="_blank"
-            rel="noopener"
-          >회의록 열기</a>
-        </div>
-
-        <div class="card resource">
-          <div class="resource-left">
-            <div class="resource-icon">DRIVE</div>
-            <div>
-              <h3>프로젝트 공용 파일</h3>
-              <p>프로젝트 자료 업로드 · 다운로드 · 파일 공유 공간</p>
-            </div>
-          </div>
-
-          <!-- Google Drive 공용 폴더 직접 열기 -->
-          <a
-            class="btn"
-            href="https://drive.google.com/drive/folders/13JbPdGiZcGREJJcDIxnC_gR1q9jcwms0?usp=drive_link"
-            target="_blank"
-            rel="noopener"
-          >Drive 열기</a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =======================================================
-         DRIVE FILE SHARING NOTICE
-         ======================================================= -->
-    <section class="section">
-
-      <div class="notice">
-
-        <div>
-          <strong>프로젝트 파일은 공용 Google Drive 폴더를 이용하세요.</strong>
-          <p>
-            프로젝트 관련 파일을 팀원들과 공유하거나 전달할 경우 아래 공용 폴더에
-            업로드해 주세요. 웹 대시보드에서는 파일 자체를 관리하기보다
-            Google Drive를 공식 파일 저장소로 사용합니다.
-          </p>
-        </div>
-
-        <a
-          class="btn"
-          href="https://drive.google.com/drive/folders/13JbPdGiZcGREJJcDIxnC_gR1q9jcwms0?usp=drive_link"
-          target="_blank"
-          rel="noopener"
-        >공용 폴더 바로가기</a>
-
-      </div>
-
-    </section>
-
-    <!-- =======================================================
-         PROGRESS
-         ======================================================= -->
-    <section class="section" id="progress">
-
-      <div class="section-title">
-        <h2>Project Progress</h2>
-        <span>실시간 업데이트 영역</span>
-      </div>
-
-      <div class="dashboard-grid">
-
-        <div class="card panel">
-
-          <div class="panel-head">
-            <h3>전체 진행률</h3>
-            <span>Overall Progress</span>
-          </div>
-
-          <div class="progress-wrap">
-
-            <div class="donut" id="donut" style="--progress: 0deg;">
-              <div class="donut-value">
-                <strong id="overallProgress">68%</strong>
-                <span>PROJECT</span>
-              </div>
-            </div>
-
-            <div class="progress-list">
-
-              <div class="progress-item">
-                <div class="progress-label">
-                  <span>Planning</span>
-                  <span>90%</span>
-                </div>
-                <div class="bar">
-                  <div data-width="90"></div>
-                </div>
-              </div>
-
-              <div class="progress-item">
-                <div class="progress-label">
-                  <span>Development</span>
-                  <span>72%</span>
-                </div>
-                <div class="bar">
-                  <div data-width="72"></div>
-                </div>
-              </div>
-
-              <div class="progress-item">
-                <div class="progress-label">
-                  <span>Verification</span>
-                  <span>54%</span>
-                </div>
-                <div class="bar">
-                  <div data-width="54"></div>
-                </div>
-              </div>
-
-              <div class="progress-item">
-                <div class="progress-label">
-                  <span>Documentation</span>
-                  <span>61%</span>
-                </div>
-                <div class="bar">
-                  <div data-width="61"></div>
-                </div>
-              </div>
-
-            </div>
+          <div class="donut-legend">
+            <span><i style="background:var(--green-700)"></i>실적</span>
+            <span><i style="background:var(--gold)"></i>계획 <b id="planPct">0%</b></span>
           </div>
         </div>
-
-        <!-- 최근 활동 -->
-        <div class="card panel" id="activities">
-
-          <div class="panel-head">
-            <h3>최근 활동</h3>
-            <span>Activity</span>
-          </div>
-
-          <div class="activity-list">
-
-            <div class="activity">
-              <div class="date">08.12</div>
-              <div>프로젝트 Dashboard 초기 버전 구성</div>
-              <div class="status">진행</div>
-            </div>
-
-            <div class="activity">
-              <div class="date">08.11</div>
-              <div>회의록 업데이트 및 Action Item 정리</div>
-              <div class="status">완료</div>
-            </div>
-
-            <div class="activity">
-              <div class="date">08.10</div>
-              <div>프로젝트 자료 공유 폴더 정리</div>
-              <div class="status">완료</div>
-            </div>
-
-            <div class="activity">
-              <div class="date">08.07</div>
-              <div>주요 일정 및 담당 업무 검토</div>
-              <div class="status">완료</div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =======================================================
-         GANTT CHART
-         - 아래 task-bar의 grid-column을 변경하면 일정 변경 가능
-         - 12개월 기준의 간단한 Gantt 구조
-         - 실제 날짜 기반 Gantt로 확장할 수 있도록 구조화
-         ======================================================= -->
-    <section class="section" id="schedule">
-
-      <div class="section-title">
-        <h2>Project Schedule</h2>
-        <span>Gantt Chart · 12 Month View</span>
       </div>
 
-      <div class="card panel gantt">
+      <!-- (2) 단계별 진행률 -->
+      <div class="card reveal">
+        <h3 class="card-title gold">단계별 진행률</h3>
+        <p class="card-sub">Phase별 가중 평균</p>
+        <div id="phaseBars"><!-- JS 렌더링 --></div>
+      </div>
 
-        <div class="gantt-grid">
-
-          <!-- Header -->
-          <div class="gantt-cell gantt-header">Task</div>
-          <div class="gantt-cell gantt-header">1월</div>
-          <div class="gantt-cell gantt-header">2월</div>
-          <div class="gantt-cell gantt-header">3월</div>
-          <div class="gantt-cell gantt-header">4월</div>
-          <div class="gantt-cell gantt-header">5월</div>
-          <div class="gantt-cell gantt-header">6월</div>
-          <div class="gantt-cell gantt-header">7월</div>
-          <div class="gantt-cell gantt-header">8월</div>
-          <div class="gantt-cell gantt-header">9월</div>
-          <div class="gantt-cell gantt-header">10월</div>
-          <div class="gantt-cell gantt-header">11월</div>
-          <div class="gantt-cell gantt-header">12월</div>
-
-          <!-- Task 1 -->
-          <div class="task-row">
-            <div class="gantt-cell task-name">① Project Planning</div>
-            <div class="task-bar done" style="grid-column: 2 / 5;">완료</div>
-          </div>
-
-          <!-- Task 2 -->
-          <div class="task-row">
-            <div class="gantt-cell task-name">② Requirements</div>
-            <div class="task-bar done" style="grid-column: 3 / 7;">진행</div>
-          </div>
-
-          <!-- Task 3 -->
-          <div class="task-row">
-            <div class="gantt-cell task-name">③ Development</div>
-            <div class="task-bar" style="grid-column: 5 / 10;">72%</div>
-          </div>
-
-          <!-- Task 4 -->
-          <div class="task-row">
-            <div class="gantt-cell task-name">④ Verification</div>
-            <div class="task-bar" style="grid-column: 7 / 12;">54%</div>
-          </div>
-
-          <!-- Task 5 -->
-          <div class="task-row">
-            <div class="gantt-cell task-name">⑤ Finalization</div>
-            <div class="task-bar" style="grid-column: 10 / 14;">예정</div>
-          </div>
-
+      <!-- (3) 주차별 추이 -->
+      <div class="card reveal">
+        <h3 class="card-title">주차별 진행 추이</h3>
+        <p class="card-sub">계획(점선) 대비 실적(실선)</p>
+        <svg class="trend" id="trendChart" viewBox="0 0 520 210" preserveAspectRatio="none" role="img" aria-label="주차별 진행 추이 차트">
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4FD1A1" stop-opacity=".28"/>
+              <stop offset="100%" stop-color="#4FD1A1" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="legend">
+          <span><i style="background:var(--green-700)"></i>실적</span>
+          <span><i style="background:var(--gold)"></i>계획</span>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
-    </section>
-
-    <!-- =======================================================
-         PROJECT RULES
-         ======================================================= -->
-    <section class="section">
-
-      <div class="section-title">
-        <h2>Project Collaboration Rules</h2>
-        <span>30 Members</span>
+<!-- ============================ 간트차트 ============================ -->
+<section class="section" id="gantt">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">SCHEDULE</div>
+        <h2 class="section-title">프로젝트 일정 (간트차트)</h2>
+        <p class="section-desc">막대 바깥은 계획 기간, 안쪽 채움은 실제 진행률입니다. 마름모(◆)는 마일스톤, 세로선은 오늘 날짜입니다.</p>
       </div>
+      <div class="legend" style="margin:0">
+        <span><i style="background:var(--green-700);height:9px;width:16px;border-radius:3px"></i>진행중</span>
+        <span><i style="background:var(--mint);height:9px;width:16px;border-radius:3px"></i>완료</span>
+        <span><i style="background:var(--gold);height:9px;width:16px;border-radius:3px"></i>지연/마일스톤</span>
+      </div>
+    </div>
 
-      <div class="card panel">
+    <div class="card gantt-card reveal">
+      <div class="gantt-toolbar" id="ganttTabs"><!-- JS: 단계 필터 탭 --></div>
+      <div class="gantt-scroll">
+        <div class="gantt" id="gantt">
+          <div class="gantt-head">
+            <div class="lab-col">작업 / 담당</div>
+            <div class="months" id="ganttMonths"></div>
+          </div>
+          <div class="gantt-body" id="ganttBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;">
+<!-- ============================ 회의록 · 공유폴더 ============================ -->
+<section class="section" id="workspace">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">WORKSPACE</div>
+        <h2 class="section-title">회의록 · 파일 공유 공간</h2>
+        <p class="section-desc">모든 회의 기록은 구글 문서 한 곳에, 모든 파일은 공유 드라이브 폴더 한 곳에 모읍니다.</p>
+      </div>
+    </div>
 
+    <div class="grid-2">
+      <!-- (A) 회의록 구글 문서 -->
+      <article class="link-card reveal">
+        <div class="lc-top">
+          <div class="lc-ico" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+              <path d="M8 13h8"/><path d="M8 17h5"/>
+            </svg>
+          </div>
           <div>
-            <strong style="color:var(--dark-green);">01. 회의록</strong>
-            <p style="font-size:12px; color:var(--muted);">
-              모든 공식 회의 내용과 결정사항은 지정된 Google 문서에 기록합니다.
-            </p>
+            <h3>회의록 (구글 문서)</h3>
+            <p>정기·수시 회의 기록을 이 문서 하나에 누적 작성합니다.</p>
           </div>
-
-          <div>
-            <strong style="color:var(--dark-green);">02. 파일 공유</strong>
-            <p style="font-size:12px; color:var(--muted);">
-              프로젝트 자료는 공용 Google Drive 폴더에 업로드하고 공유합니다.
-            </p>
-          </div>
-
-          <div>
-            <strong style="color:var(--dark-green);">03. Dashboard</strong>
-            <p style="font-size:12px; color:var(--muted);">
-              주요 일정과 진행률은 Dashboard를 기준으로 프로젝트 상태를 확인합니다.
-            </p>
-          </div>
-
         </div>
 
+        <div class="path">
+          <span class="seg">Google Docs</span><span class="sep">›</span>
+          <span class="seg">HD 프로젝트</span><span class="sep">›</span>
+          <span class="leaf">회의록 (Meeting Notes)</span>
+        </div>
+
+        <div class="guide">
+          <h4><span class="num">1</span>회의록 작성 규칙</h4>
+          <ol>
+            <li>최신 회의가 위로 오도록 <b>문서 맨 위에 새 회의를 추가</b>합니다.</li>
+            <li>제목 형식: <code>[YYYY-MM-DD] 회의명 / 작성자</code></li>
+            <li>항목 순서: <b>참석자 → 안건 → 결정사항 → 액션아이템(담당·기한)</b></li>
+            <li>액션아이템은 담당자를 <code>@이름</code> 으로 멘션해 알림이 가도록 합니다.</li>
+            <li>수정은 <b>제안 모드</b>가 아닌 직접 편집, 삭제 대신 취소선을 사용합니다.</li>
+          </ol>
+          <div class="notice"><b>공유 권한 안내</b> — 링크를 가진 프로젝트 참여자 전원(30명)이 열람·편집할 수 있습니다. 외부 공유가 필요하면 PM에게 먼저 요청해 주세요.</div>
+        </div>
+
+        <div class="lc-actions">
+          <a class="btn btn-dark" id="docsOpen" href="#" target="_blank" rel="noopener">회의록 열기</a>
+          <button class="btn btn-ghost" data-copy="docs">링크 복사</button>
+        </div>
+      </article>
+
+      <!-- (B) 공유 드라이브 폴더 -->
+      <article class="link-card folder reveal">
+        <div class="lc-top">
+          <div class="lc-ico" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <path d="M12 11v6"/><path d="m9 14 3-3 3 3"/>
+            </svg>
+          </div>
+          <div>
+            <h3>공유 폴더 (구글 드라이브)</h3>
+            <p>프로젝트 기간 동안 모든 파일을 이 폴더에서 올리고 내려받습니다.</p>
+          </div>
+        </div>
+
+        <div class="path">
+          <span class="seg">Google Drive</span><span class="sep">›</span>
+          <span class="seg">공유 문서함</span><span class="sep">›</span>
+          <span class="leaf" id="pathFolder">HD프로젝트_공유폴더</span>
+        </div>
+
+        <!-- 폴더 구조: 실제 드라이브 하위 폴더와 동일하게 맞춰 사용 -->
+        <ul class="tree" id="folderTree"><!-- JS 렌더링 --></ul>
+
+        <div class="guide">
+          <h4><span class="num">2</span>파일 올리기 / 받아가기</h4>
+          <ol>
+            <li><b>올리기</b> — [공유 폴더 열기] → 해당 하위 폴더로 이동 → 파일을 창 안으로 <b>끌어다 놓기</b>(또는 <code>+ 신규 › 파일 업로드</code>).</li>
+            <li><b>받아가기</b> — 파일 선택 → <b>마우스 오른쪽 클릭 › 다운로드</b>. 여러 개는 <code>Ctrl</code>(Mac은 <code>⌘</code>)로 다중 선택 후 한 번에 받습니다.</li>
+            <li><b>파일명 규칙</b> — <code>YYYYMMDD_문서명_담당자_v1.0</code> (예: <code>20260812_요구사양서_홍길동_v1.2</code>)</li>
+            <li><b>버전</b> — 같은 파일을 고칠 때는 새 파일을 만들지 말고, 기존 파일 위에 같은 이름으로 올려 <b>버전 관리</b>에 쌓이게 합니다.</li>
+            <li><b>대용량</b> — 500MB 이상 3D·영상 파일은 압축 후 <code>05_영상_이미지</code> 폴더에 올리고 회의록에 등록 사실을 남깁니다.</li>
+          </ol>
+          <div class="notice"><b>주의</b> — 원본 파일의 <b>이동·삭제·이름 변경</b>은 다른 팀원에게도 그대로 반영됩니다. 남의 파일은 수정하지 말고 사본을 만들어 사용해 주세요. 사내 대외비 자료는 담당 부서 승인 후 업로드합니다.</div>
+        </div>
+
+        <div class="lc-actions">
+          <a class="btn btn-gold" id="driveOpen" href="#" target="_blank" rel="noopener">공유 폴더 열기</a>
+          <button class="btn btn-ghost" data-copy="drive">폴더 링크 복사</button>
+          <button class="btn btn-ghost" data-copy="rule">파일명 규칙 복사</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 마일스톤 ============================ -->
+<section class="section" id="milestone">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">MILESTONE</div>
+        <h2 class="section-title">주요 마일스톤</h2>
+        <p class="section-desc">일정 확정이 필요한 핵심 시점입니다. 간트차트의 마름모(◆) 표시와 연동됩니다.</p>
       </div>
-    </section>
+    </div>
+    <div class="ms-list" id="msList"><!-- JS 렌더링 --></div>
+  </div>
+</section>
 
-  </main>
+<!-- ============================ 참여 인원 ============================ -->
+<section class="section" id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">MEMBERS</div>
+        <h2 class="section-title">자료 공유 대상 <span id="teamTotalTitle"></span></h2>
+        <p class="section-desc">아래 파트 전원에게 회의록과 공유 폴더 접근 권한이 부여되어 있습니다.</p>
+      </div>
+    </div>
+    <div class="card reveal">
+      <div class="share-bar" id="shareBar"></div>
+      <div class="team-grid" id="teamGrid"></div>
+    </div>
+  </div>
+</section>
 
-  <footer>
-    HD Project Dashboard · Project Collaboration Workspace
-  </footer>
+<!-- ============================ 푸터 ============================ -->
+<footer>
+  <div class="wrap foot">
+    <div>
+      <b style="color:#EAF3EE">HD 프로젝트 협업 대시보드</b><br />
+      데이터 수정: <code style="color:var(--gold)">index.html</code> 하단 <b>① 설정 영역</b>의 CONFIG / TASKS / MILESTONES / TREND / TEAM 값만 바꾸면 화면에 반영됩니다.
+    </div>
+    <div style="text-align:right">
+      <a href="#" id="footDocs" target="_blank" rel="noopener">회의록</a> ·
+      <a href="#" id="footDrive" target="_blank" rel="noopener">공유 폴더</a><br />
+      <span id="footUpdated"></span>
+    </div>
+  </div>
+</footer>
 
-  <script>
-    /* =========================================================
-       JAVASCRIPT
-       - 별도 JS 파일 없이 이 HTML 하나에서 동작합니다.
-       - 향후 Google Sheets / API / DB 연동 시 이 영역을 확장합니다.
-       ========================================================= */
+<!-- 툴팁 · 토스트 -->
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast"><span class="ok">✓</span><span id="toastMsg"></span></div>
 
-    document.addEventListener("DOMContentLoaded", () => {
+<script>
+/* ==========================================================================
+   ① 설정 영역 — 여기 값만 수정하세요 (HTML/CSS는 건드릴 필요 없습니다)
+   ========================================================================== */
 
-      /* -------------------------------------------------------
-         1. 숫자 카운트업 효과
-         ------------------------------------------------------- */
-      const counters = document.querySelectorAll("[data-count]");
+/* 1) 프로젝트 기본 정보 ---------------------------------------------------- */
+const CONFIG = {
+  name       : 'HD 프로젝트',                 // 프로젝트명
+  subtitle   : 'TEAM COLLABORATION DASHBOARD',
+  start      : '2026-08-01',                  // 프로젝트 시작일 (간트차트 좌측 끝)
+  end        : '2026-12-31',                  // 프로젝트 종료일 (간트차트 우측 끝)
+  members    : 30,                            // 자료 공유 인원 수
+  updated    : '2026-08-12',                  // 대시보드 최종 갱신일 (수정할 때마다 바꿔주세요)
+  folderName : 'HD프로젝트_공유폴더',          // 드라이브 최상위 폴더 표시명
+  fileRule   : 'YYYYMMDD_문서명_담당자_v1.0',  // 파일명 규칙 (복사 버튼에 사용)
 
-      counters.forEach(counter => {
-        const target = Number(counter.dataset.count);
-        const isPercent = counter.textContent.includes("%");
-        let current = 0;
+  // 구글 문서 / 드라이브 링크
+  docsUrl  : 'https://docs.google.com/document/d/1uDpSeNwqRB7TnnmfgK7svmaSavlROvNf8xQ8FeVx14o/edit?usp=sharing',
+  driveUrl : 'https://drive.google.com/drive/folders/13JbPdGiZcGREJJcDIxnC_gR1q9jcwms0?usp=drive_link'
+};
 
-        const duration = 900;
-        const start = performance.now();
+/* 2) 공유 폴더 하위 구조 --------------------------------------------------
+   실제 구글 드라이브에 아래와 동일한 이름의 하위 폴더를 만들어 두면
+   팀원이 이 표를 보고 어디에 올릴지 바로 판단할 수 있습니다.            */
+const FOLDERS = [
+  { no:'00', name:'00_프로젝트_개요',   desc:'착수보고 · 조직도 · 연락처' },
+  { no:'01', name:'01_회의록_자료',     desc:'회의 발표자료 · 부속 문서' },
+  { no:'02', name:'02_기술_자료',       desc:'사양서 · 도면 · 기술 검토서' },
+  { no:'03', name:'03_산출물_제출본',   desc:'최종 납품/보고용 확정본' },
+  { no:'04', name:'04_참고_외부자료',   desc:'벤치마킹 · 논문 · 시장자료' },
+  { no:'05', name:'05_영상_이미지',     desc:'렌더링 · 촬영본 · 데모 영상' },
+  { no:'99', name:'99_작업중_임시',     desc:'검토 전 임시 파일 (주기적 정리)' }
+];
 
-        function animate(now) {
-          const progress = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
+/* 3) 작업(WBS) 목록 --------------------------------------------------------
+   phase    : 단계명 (같은 phase끼리 간트/차트에서 묶입니다)
+   name     : 작업명
+   owner    : 담당자 또는 담당 파트
+   start,end: 계획 시작/종료일 (YYYY-MM-DD)
+   progress : 진행률 0~100
+   weight   : 가중치(중요도). 생략하면 1. 전체 진행률 계산에 반영됩니다.        */
+const TASKS = [
+  { phase:'1. 기획 · 착수', name:'프로젝트 착수 및 킥오프',  owner:'PM',        start:'2026-08-01', end:'2026-08-14', progress:100, weight:1 },
+  { phase:'1. 기획 · 착수', name:'요구사항 조사 · 정리',     owner:'기획',      start:'2026-08-10', end:'2026-09-05', progress:80,  weight:2 },
+  { phase:'1. 기획 · 착수', name:'범위 · 일정 확정',         owner:'PM',        start:'2026-08-25', end:'2026-09-12', progress:55,  weight:1 },
 
-          current = Math.floor(target * eased);
-          counter.textContent = current + (isPercent ? "%" : "");
+  { phase:'2. 설계 · 검토', name:'기본 설계안 작성',         owner:'설계팀',    start:'2026-09-07', end:'2026-10-10', progress:35,  weight:3 },
+  { phase:'2. 설계 · 검토', name:'기술 검토 · 타당성 분석',  owner:'기술팀',    start:'2026-09-20', end:'2026-10-25', progress:20,  weight:2 },
+  { phase:'2. 설계 · 검토', name:'설계 리뷰 회의(2회)',      owner:'전체',      start:'2026-10-05', end:'2026-10-30', progress:10,  weight:1 },
 
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          }
-        }
+  { phase:'3. 개발 · 제작', name:'상세 개발 · 콘텐츠 제작',  owner:'개발/제작', start:'2026-10-12', end:'2026-11-28', progress:0,   weight:3 },
+  { phase:'3. 개발 · 제작', name:'중간 산출물 점검',         owner:'PM',        start:'2026-11-02', end:'2026-11-20', progress:0,   weight:1 },
 
-        requestAnimationFrame(animate);
-      });
+  { phase:'4. 검증 · 마무리', name:'통합 테스트 · 검증',     owner:'품질',      start:'2026-11-25', end:'2026-12-15', progress:0,   weight:2 },
+  { phase:'4. 검증 · 마무리', name:'최종 보고서 작성',       owner:'전체',      start:'2026-12-05', end:'2026-12-24', progress:0,   weight:2 },
+  { phase:'4. 검증 · 마무리', name:'산출물 이관 · 종료',     owner:'PM',        start:'2026-12-20', end:'2026-12-31', progress:0,   weight:1 }
+];
+
+/* 4) 마일스톤 -------------------------------------------------------------- */
+const MILESTONES = [
+  { date:'2026-08-14', name:'킥오프 회의',      done:true  },
+  { date:'2026-09-12', name:'요구사양 확정',    done:false },
+  { date:'2026-10-30', name:'설계 리뷰 완료',   done:false },
+  { date:'2026-12-15', name:'검증 완료',        done:false },
+  { date:'2026-12-31', name:'최종 산출물 제출', done:false }
+];
+
+/* 5) 주차별 진행 추이 ------------------------------------------------------
+   회의 때마다 한 줄씩 추가하면 추이 그래프가 자동으로 늘어납니다.
+   plan = 그 시점의 계획 진행률(%), actual = 실제 진행률(%)                 */
+const TREND = [
+  { label:'8월1주', plan:3,  actual:2  },
+  { label:'8월2주', plan:8,  actual:9  },
+  { label:'8월3주', plan:13, actual:14 },
+  { label:'8월4주', plan:18, actual:17 },
+  { label:'9월1주', plan:24, actual:22 },
+  { label:'9월2주', plan:30, actual:26 },
+  { label:'9월3주', plan:36, actual:31 },
+  { label:'9월4주', plan:42, actual:35 }
+];
+
+/* 6) 참여 파트 인원 (합계가 CONFIG.members 와 맞도록 관리) ---------------- */
+const TEAM = [
+  { part:'PM · 기획',   count:4 },
+  { part:'설계',        count:7 },
+  { part:'기술 · 개발', count:8 },
+  { part:'제작 · 콘텐츠', count:5 },
+  { part:'품질 · 검증', count:3 },
+  { part:'유관 부서',   count:3 }
+];
 
 
-      /* -------------------------------------------------------
-         2. 진행률 Bar 애니메이션
-         ------------------------------------------------------- */
-      const bars = document.querySelectorAll(".bar > div");
+/* ==========================================================================
+   ② 공통 유틸 함수
+   ========================================================================== */
+const $  = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const DAY = 86400000;
+const toDate = s => new Date(s + 'T00:00:00');
+const today  = new Date(new Date().toDateString()); // 시분초 제거한 오늘
 
-      setTimeout(() => {
-        bars.forEach(bar => {
-          bar.style.width = bar.dataset.width + "%";
-        });
-      }, 300);
+/** 두 날짜 사이 일수 */
+const days = (a, b) => Math.round((toDate(b) - toDate(a)) / DAY);
+/** 0~100 범위로 자르기 */
+const clamp = (v, min=0, max=100) => Math.min(max, Math.max(min, v));
+/** 'YYYY-MM-DD' → 'M/D' 표시 */
+const fmt = s => { const d = toDate(s); return (d.getMonth()+1) + '/' + d.getDate(); };
 
+const P_START = toDate(CONFIG.start);
+const P_END   = toDate(CONFIG.end);
+const P_DAYS  = (P_END - P_START) / DAY + 1;   // 전체 프로젝트 일수
 
-      /* -------------------------------------------------------
-         3. Donut Chart 애니메이션
-         68% -> 244.8deg
-         ------------------------------------------------------- */
-      const donut = document.getElementById("donut");
-      const overallProgress = 68;
+/** 특정 날짜의 간트 가로 위치(%) */
+const posOf = d => ((d - P_START) / DAY) / P_DAYS * 100;
 
-      let currentDegree = 0;
-      const targetDegree = overallProgress * 3.6;
-
-      const donutTimer = setInterval(() => {
-        currentDegree += 5;
-
-        if (currentDegree >= targetDegree) {
-          currentDegree = targetDegree;
-          clearInterval(donutTimer);
-        }
-
-        donut.style.setProperty("--progress", currentDegree + "deg");
-      }, 15);
+/** 단계(phase)별 색상 - 다크그린 계열 4단계 */
+const PHASE_COLORS = ['#0B3A2C', '#12513E', '#1B6B52', '#4FD1A1'];
 
 
-      /* -------------------------------------------------------
-         4. 외부 링크 클릭 피드백
-         ------------------------------------------------------- */
-      const externalLinks = document.querySelectorAll('a[target="_blank"]');
+/* ==========================================================================
+   ③ 계산: 진행률 · 상태
+   ========================================================================== */
 
-      externalLinks.forEach(link => {
-        link.addEventListener("click", () => {
-          link.style.opacity = "0.65";
+/** 가중 평균 진행률 */
+function weightedProgress(list){
+  const w = list.reduce((s,t) => s + (t.weight || 1), 0);
+  if (!w) return 0;
+  return list.reduce((s,t) => s + t.progress * (t.weight || 1), 0) / w;
+}
 
-          setTimeout(() => {
-            link.style.opacity = "1";
-          }, 250);
-        });
-      });
+/** 오늘 기준 '계획상' 진행률 (일정 경과율의 가중 평균) */
+function plannedProgress(list){
+  const w = list.reduce((s,t) => s + (t.weight || 1), 0);
+  if (!w) return 0;
+  return list.reduce((s,t) => {
+    const total = days(t.start, t.end) + 1;
+    const past  = (today - toDate(t.start)) / DAY + 1;
+    return s + clamp(past / total * 100) * (t.weight || 1);
+  }, 0) / w;
+}
 
+/** 작업 상태 판정: done(완료) / late(지연) / doing(진행중) / todo(예정) */
+function statusOf(t){
+  if (t.progress >= 100) return 'done';
+  if (toDate(t.end) < today) return 'late';        // 종료일이 지났는데 미완료 → 지연
+  if (t.progress > 0 || toDate(t.start) <= today) return 'doing';
+  return 'todo';
+}
+
+const overall = weightedProgress(TASKS);
+const planned = plannedProgress(TASKS);
+const counts  = { done:0, doing:0, todo:0, late:0 };
+TASKS.forEach(t => counts[statusOf(t)]++);
+
+
+/* ==========================================================================
+   ④ 렌더링 : 헤더 · KPI
+   ========================================================================== */
+function renderHeader(){
+  $('#brandName').textContent = CONFIG.name;
+  $('#brandSub').textContent  = CONFIG.subtitle;
+  $('#chipPeriod').textContent  = CONFIG.start.replace(/-/g,'.') + ' – ' + CONFIG.end.replace(/-/g,'.');
+  $('#chipMembers').textContent = CONFIG.members + '명';
+  $('#chipUpdated').textContent = CONFIG.updated.replace(/-/g,'.');
+
+  // D-day 계산
+  const left = Math.ceil((P_END - today) / DAY);
+  $('#chipDday').textContent = left > 0 ? 'D-' + left : (left === 0 ? 'D-DAY' : '종료');
+
+  // 링크 연결
+  $('#docsOpen').href  = CONFIG.docsUrl;
+  $('#driveOpen').href = CONFIG.driveUrl;
+  $('#footDocs').href  = CONFIG.docsUrl;
+  $('#footDrive').href = CONFIG.driveUrl;
+  $('#footUpdated').textContent = '최종 업데이트 ' + CONFIG.updated;
+  $('#pathFolder').textContent  = CONFIG.folderName;
+  $('#teamTotalTitle').innerHTML = '<span class="badge mint">' + CONFIG.members + '명</span>';
+
+  // 헤더 게이지
+  $('#heroDone').textContent  = counts.done;
+  $('#heroTotal').textContent = TASKS.length;
+  const gap = overall - planned;
+  $('#heroGap').textContent = (gap >= 0 ? '+' : '') + gap.toFixed(1) + '%p';
+}
+
+function renderKPI(){
+  const gap = overall - planned;
+  const kpis = [
+    { lab:'전체 진행률', val:overall.toFixed(1), unit:'%', sub:'계획 ' + planned.toFixed(1) + '% 대비 ' + (gap>=0?'+':'') + gap.toFixed(1) + '%p', cls:'is-mint', count:true },
+    { lab:'완료 과제',   val:counts.done,  unit:'건', sub:'전체 ' + TASKS.length + '건 중', cls:'', count:true },
+    { lab:'진행중 과제', val:counts.doing, unit:'건', sub:'담당자 확인 필요', cls:'', count:true },
+    { lab:'지연 과제',   val:counts.late,  unit:'건', sub:counts.late ? '즉시 일정 재협의' : '지연 없음', cls:'is-gold', count:true },
+    { lab:'자료 공유 인원', val:CONFIG.members, unit:'명', sub:TEAM.length + '개 파트 참여', cls:'is-mint', count:true }
+  ];
+  $('#kpiGrid').innerHTML = kpis.map(k => `
+    <div class="kpi ${k.cls}">
+      <div class="lab">${k.lab}</div>
+      <div class="val"><span class="num" data-to="${k.val}">0</span><small>${k.unit}</small></div>
+      <div class="sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+
+/* ==========================================================================
+   ⑤ 렌더링 : 진행률 차트 (도넛 · 단계별 바 · 추이)
+   ========================================================================== */
+function renderDonut(){
+  const C = 2 * Math.PI * 50;                 // 반지름 50 원둘레 ≈ 314
+  const set = (el, pct) => { el.style.strokeDashoffset = C * (1 - pct/100); };
+  $('#planPct').textContent = planned.toFixed(0) + '%';
+  // 살짝 지연시켜 애니메이션이 보이도록 함
+  setTimeout(() => { set($('#mainRing'), overall); set($('#heroRing'), overall); }, 350);
+}
+
+function renderPhaseBars(){
+  const phases = [...new Set(TASKS.map(t => t.phase))];
+  $('#phaseBars').innerHTML = phases.map((p, i) => {
+    const list = TASKS.filter(t => t.phase === p);
+    const v = weightedProgress(list);
+    return `
+      <div class="bar-row">
+        <div class="bar-head"><b>${p}</b><span>${v.toFixed(0)}%</span></div>
+        <div class="bar-track"><div class="bar-fill" data-w="${v}"
+             style="background:linear-gradient(90deg, ${PHASE_COLORS[i % 4]}, ${i===3?'#8BE8C4':'#4FD1A1'})"></div></div>
+      </div>`;
+  }).join('');
+}
+
+/** 주차별 추이 라인차트 (순수 SVG로 그림) */
+function renderTrend(){
+  const svg = $('#trendChart');
+  const W = 520, H = 210, pad = { l:30, r:10, t:14, b:26 };
+  const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+  const n  = TREND.length;
+  const x = i => pad.l + (n === 1 ? iw/2 : iw * i / (n - 1));
+  const y = v => pad.t + ih * (1 - v / 100);
+
+  let html = '';
+  // 가로 눈금선 + Y축 라벨 (0/25/50/75/100%)
+  [0,25,50,75,100].forEach(v => {
+    html += `<line class="grid-line" x1="${pad.l}" y1="${y(v)}" x2="${W-pad.r}" y2="${y(v)}"/>`;
+    html += `<text class="axis-txt" x="${pad.l-6}" y="${y(v)+3}" text-anchor="end">${v}</text>`;
+  });
+  // 실적 영역
+  const areaPts = TREND.map((d,i) => `${x(i)},${y(d.actual)}`).join(' ');
+  html += `<polygon class="area" points="${pad.l},${y(0)} ${areaPts} ${x(n-1)},${y(0)}"/>`;
+  // 계획선(점선) · 실적선(실선)
+  html += `<polyline class="line-plan"   points="${TREND.map((d,i)=>`${x(i)},${y(d.plan)}`).join(' ')}"/>`;
+  html += `<polyline class="line-actual" points="${areaPts}"/>`;
+  // 데이터 포인트 + X축 라벨(짝수 인덱스만 표기해 겹침 방지)
+  TREND.forEach((d,i) => {
+    html += `<circle class="dot" cx="${x(i)}" cy="${y(d.actual)}" r="3.5"><title>${d.label} · 실적 ${d.actual}% / 계획 ${d.plan}%</title></circle>`;
+    if (i % 2 === 0 || i === n-1)
+      html += `<text class="axis-txt" x="${x(i)}" y="${H-8}" text-anchor="middle">${d.label}</text>`;
+  });
+  svg.insertAdjacentHTML('beforeend', html);
+}
+
+
+/* ==========================================================================
+   ⑥ 렌더링 : 간트차트
+   ========================================================================== */
+
+/** 상단 월 헤더 (각 월이 차지하는 일수 비율만큼 폭 배분) */
+function renderMonths(){
+  let html = '', cur = new Date(P_START);
+  while (cur <= P_END){
+    const mEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0); // 그 달의 마지막 날
+    const to   = mEnd > P_END ? P_END : mEnd;
+    const w    = ((to - cur) / DAY + 1) / P_DAYS * 100;
+    html += `<div class="month" style="width:${w}%">${cur.getMonth()+1}월</div>`;
+    cur = new Date(to.getTime() + DAY);
+  }
+  $('#ganttMonths').innerHTML = html;
+}
+
+/** 간트 본문. filter='ALL' 이거나 특정 phase명 */
+function renderGantt(filter = 'ALL'){
+  const body = $('#ganttBody');
+  const phases = [...new Set(TASKS.map(t => t.phase))].filter(p => filter === 'ALL' || p === filter);
+  let html = '';
+
+  phases.forEach((p, pi) => {
+    const list = TASKS.filter(t => t.phase === p);
+    const idx  = [...new Set(TASKS.map(t => t.phase))].indexOf(p);
+    html += `<div class="g-phase"><span class="dot" style="background:${PHASE_COLORS[idx % 4]}"></span>${p}
+               <span class="cnt">(${list.length}건 · ${weightedProgress(list).toFixed(0)}%)</span></div>`;
+
+    list.forEach(t => {
+      const st = statusOf(t);
+      const left  = posOf(toDate(t.start));
+      const width = (days(t.start, t.end) + 1) / P_DAYS * 100;
+      html += `
+        <div class="g-row">
+          <div class="lab" title="${t.name}">${t.name}<span class="owner">${t.owner}</span></div>
+          <div class="g-track">
+            <div class="g-bar ${st === 'done' ? 'done' : ''} ${st === 'late' ? 'late' : ''}"
+                 style="left:${left}%;width:${width}%"
+                 data-name="${t.name}" data-owner="${t.owner}"
+                 data-period="${fmt(t.start)} ~ ${fmt(t.end)}"
+                 data-progress="${t.progress}" data-status="${st}" tabindex="0">
+              <div class="fill" data-w="${t.progress}"></div>
+              <span class="pct">${t.progress}%</span>
+            </div>
+          </div>
+        </div>`;
     });
+  });
+
+  // 마일스톤 전용 행 (마름모 마커)
+  if (filter === 'ALL'){
+    html += `<div class="g-phase"><span class="dot" style="background:var(--gold)"></span>마일스톤</div>
+      <div class="g-row"><div class="lab">주요 확정 시점<span class="owner">전체</span></div>
+        <div class="g-track">` +
+        MILESTONES.map(m => `<div class="g-ms" style="left:${posOf(toDate(m.date))}%"
+              data-name="${m.name}" data-period="${fmt(m.date)}"
+              data-status="${m.done ? 'done' : 'ms'}" tabindex="0"></div>`).join('') +
+      `</div></div>`;
+  }
+
+  body.innerHTML = html;
+  drawTodayLine();
+  animateBars();
+}
+
+/** 오늘 날짜 세로선 (프로젝트 기간 안에 있을 때만 표시) */
+function drawTodayLine(){
+  if (today < P_START || today > P_END) return;
+  const body = $('#ganttBody');
+  const line = document.createElement('div');
+  line.className = 'today-line';
+  // 좌측 라벨 컬럼 폭을 감안해 위치 계산
+  const labelW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gantt-label'));
+  line.style.left = `calc(${labelW}px + (100% - ${labelW}px - 22px) * ${posOf(today)/100})`;
+  body.appendChild(line);
+}
+
+/** 막대 · 채움 애니메이션 (렌더 직후 순차 실행) */
+function animateBars(){
+  $$('.g-bar').forEach((b, i) => {
+    setTimeout(() => {
+      b.classList.add('show');
+      const f = $('.fill', b);
+      if (f) f.style.width = f.dataset.w + '%';
+    }, 40 * i);
+  });
+  $$('.g-ms').forEach((m, i) => setTimeout(() => m.classList.add('show'), 300 + 60 * i));
+}
+
+/** 단계 필터 탭 */
+function renderTabs(){
+  const phases = ['ALL', ...new Set(TASKS.map(t => t.phase))];
+  $('#ganttTabs').innerHTML = phases.map((p, i) =>
+    `<button class="tab ${i===0?'active':''}" data-phase="${p}">${p === 'ALL' ? '전체 보기' : p}</button>`).join('');
+  $$('#ganttTabs .tab').forEach(btn => btn.addEventListener('click', () => {
+    $$('#ganttTabs .tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGantt(btn.dataset.phase);
+  }));
+}
 
 
-    /* =========================================================
-       향후 확장 예시
-       ---------------------------------------------------------
-       아래와 같은 형태로 실제 데이터 API를 연결할 수 있습니다.
+/* ==========================================================================
+   ⑦ 렌더링 : 폴더 트리 · 마일스톤 · 팀
+   ========================================================================== */
+function renderFolders(){
+  $('#folderTree').innerHTML =
+    `<li><span class="fno">/</span>${CONFIG.folderName}<span class="fdesc">최상위 공유 폴더</span></li>` +
+    FOLDERS.map(f => `<li><span class="fno">${f.no}</span>${f.name}<span class="fdesc">${f.desc}</span></li>`).join('');
+}
 
-       async function loadProjectData() {
-         const response = await fetch("YOUR_API_URL");
-         const data = await response.json();
+function renderMilestones(){
+  // 아직 지나지 않은 첫 마일스톤을 '다음 목표'로 강조
+  const nextIdx = MILESTONES.findIndex(m => !m.done && toDate(m.date) >= today);
+  $('#msList').innerHTML = MILESTONES.map((m, i) => {
+    const past = toDate(m.date) < today;
+    const cls  = m.done ? 'done' : (i === nextIdx ? 'next' : '');
+    const left = Math.ceil((toDate(m.date) - today) / DAY);
+    const badge = m.done ? '<span class="badge mint">완료</span>'
+                : past   ? '<span class="badge gold">지연</span>'
+                : `<span class="badge">D-${left}</span>`;
+    return `<div class="ms ${cls}">
+        <div class="date">${m.date.replace(/-/g,'.')}</div>
+        <div class="name">${m.name}</div>
+        <div class="stat">${badge}</div>
+      </div>`;
+  }).join('');
+}
 
-         // 진행률 업데이트
-         // document.getElementById("overallProgress").textContent =
-         //   data.progress + "%";
-       }
+function renderTeam(){
+  const total = TEAM.reduce((s,t) => s + t.count, 0);
+  $('#teamGrid').innerHTML = TEAM.map((t, i) => `
+    <div class="team-item">
+      <span class="avatar" style="background:${PHASE_COLORS[i % 4]}">${t.part.slice(0,2)}</span>
+      <span>${t.part}</span><span class="cnt">${t.count}</span>
+    </div>`).join('');
 
-       현재 버전에서는 팀원이 GitHub에서 HTML을 수정하여
-       프로젝트 데이터를 직접 업데이트할 수 있도록 구성했습니다.
-       ========================================================= */
-  </script>
+  // 파트별 비중 스택 바
+  $('#shareBar').innerHTML = TEAM.map((t, i) =>
+    `<div style="width:0;background:${PHASE_COLORS[i % 4]};opacity:${1 - i*0.1}" data-w="${t.count/total*100}"
+          title="${t.part} ${t.count}명"></div>`).join('');
+  setTimeout(() => $$('#shareBar div').forEach(d => d.style.width = d.dataset.w + '%'), 400);
+}
 
+
+/* ==========================================================================
+   ⑧ 인터랙션 : 툴팁 · 복사 · 카운트업 · 스크롤 리빌
+   ========================================================================== */
+
+/** 간트 막대 마우스오버 툴팁 */
+function bindTooltip(){
+  const tip = $('#tip');
+  const LABEL = { done:'완료', doing:'진행중', todo:'예정', late:'지연', ms:'마일스톤' };
+
+  document.addEventListener('mouseover', e => {
+    const el = e.target.closest('.g-bar, .g-ms');
+    if (!el) return;
+    const pg = el.dataset.progress;
+    tip.innerHTML = `<b>${el.dataset.name}</b><br />${el.dataset.period}` +
+                    (el.dataset.owner ? ` · ${el.dataset.owner}` : '') +
+                    `<br />상태: ${LABEL[el.dataset.status]}` + (pg !== undefined ? ` · 진행 ${pg}%` : '');
+    tip.classList.add('on');
+  });
+  document.addEventListener('mousemove', e => {
+    if (!tip.classList.contains('on')) return;
+    // 화면 밖으로 넘치지 않도록 위치 보정
+    const x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 12);
+    tip.style.left = x + 'px';
+    tip.style.top  = (e.clientY + 18) + 'px';
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('.g-bar, .g-ms')) tip.classList.remove('on');
+  });
+}
+
+/** 링크/규칙 복사 + 토스트 */
+function bindCopy(){
+  const MSG = {
+    docs : { text: CONFIG.docsUrl,  msg:'회의록 링크를 복사했습니다' },
+    drive: { text: CONFIG.driveUrl, msg:'공유 폴더 링크를 복사했습니다' },
+    rule : { text: CONFIG.fileRule, msg:'파일명 규칙을 복사했습니다' }
+  };
+  $$('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+    const item = MSG[btn.dataset.copy];
+    try{
+      await navigator.clipboard.writeText(item.text);
+      showToast(item.msg);
+    }catch(err){
+      // 클립보드 API가 막힌 환경(구형 브라우저/비HTTPS)용 대체 동작
+      const ta = document.createElement('textarea');
+      ta.value = item.text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove();
+      showToast(item.msg);
+    }
+  }));
+}
+function showToast(msg){
+  const t = $('#toast');
+  $('#toastMsg').textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/** 숫자 카운트업 애니메이션 */
+function countUp(el){
+  const to = parseFloat(el.dataset.to);
+  const dec = (el.dataset.to.includes('.')) ? 1 : 0;
+  const dur = 1100, t0 = performance.now();
+  (function step(now){
+    const p = Math.min(1, (now - t0) / dur);
+    const eased = 1 - Math.pow(1 - p, 3);           // easeOutCubic
+    el.textContent = (to * eased).toFixed(dec);
+    if (p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+/** 스크롤 진입 시 요소 등장 + 바/숫자 애니메이션 실행 */
+function bindReveal(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('in');
+      $$('.bar-fill', en.target).forEach(b => b.style.width = b.dataset.w + '%');
+      io.unobserve(en.target);
+    });
+  }, { threshold:.12 });
+  $$('.reveal').forEach(el => io.observe(el));
+
+  // KPI 숫자는 로드 직후 바로 실행
+  $$('.kpi .num').forEach((el, i) => setTimeout(() => countUp(el), 200 + i * 90));
+}
+
+
+/* ==========================================================================
+   ⑨ 초기 실행
+   ========================================================================== */
+function init(){
+  renderHeader();
+  renderKPI();
+  renderDonut();
+  renderPhaseBars();
+  renderTrend();
+  renderMonths();
+  renderTabs();
+  renderGantt('ALL');
+  renderFolders();
+  renderMilestones();
+  renderTeam();
+  bindTooltip();
+  bindCopy();
+  bindReveal();
+
+  // 화면 크기가 바뀌면 오늘 선 위치가 틀어지므로 간트만 다시 그림
+  let rt;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => {
+      const active = $('#ganttTabs .tab.active');
+      renderGantt(active ? active.dataset.phase : 'ALL');
+    }, 250);
+  });
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
